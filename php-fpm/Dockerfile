@@ -1,26 +1,12 @@
 FROM php:7.4-fpm as php-base
 
-RUN apt-get update && apt-get install -y \
-        libfreetype6-dev \
-        libjpeg62-turbo-dev \
-        libpng-dev \
-        libmcrypt-dev \
-        libxml++2.6-dev \
-        libcurl3-dev \
-        libxpm-dev \         
-        python git \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd 
-    
-RUN docker-php-ext-install \
-    curl \
-    xml\
-    sockets \
-    intl \
-    bcmath \
-    pdo \
-    mysqli \
-    pdo_mysql
+# PHP EXTENSIONS
+ADD https://raw.githubusercontent.com/mlocati/docker-php-extension-installer/master/install-php-extensions /usr/local/bin/
+RUN chmod uga+x /usr/local/bin/install-php-extensions \
+    && sync \
+    && install-php-extensions --cleanup gd intl pdo_pgsql soap zip bcmath xmlrpc mbstring pcntl
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 EXPOSE 9000
 
