@@ -25,6 +25,4 @@ RUN curl -LO https://deployer.org/deployer.phar && \
 
 COPY ./php.ini /usr/local/etc/php/conf.d/php.ini
 
-USER www-data
-
 WORKDIR /var/www
